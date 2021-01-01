@@ -139,3 +139,9 @@ alias gdl='git diff | lolcat'
 alias gap='git add -p'
 
 alias '?'='~/gs.sh'
+
+function cd() {
+  builtin cd "$@" && ls -F | lolcat
+}
+
+alias ls='ls | lolcat'

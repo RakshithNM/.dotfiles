@@ -4,7 +4,7 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'Yggdroot/indentLine'                                                      " indent line
-Plug 'luochen1990/rainbow'                                                      " different level highlight 
+Plug 'luochen1990/rainbow'                                                      " different level highlight
 Plug 'RRethy/vim-illuminate'                                                    " automatically highlight other uses of the current word
 Plug 'machakann/vim-highlightedyank'                                            " make the yanked region apparent
 Plug 'gregsexton/MatchTag'                                                      " highlight matching tag
@@ -14,6 +14,9 @@ Plug 'haishanh/night-owl.vim'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'mattn/emmet-vim'
 Plug 'preservim/nerdcommenter'
+Plug 'vim-pandoc/vim-pandoc'
+Plug 'vim-pandoc/vim-pandoc-syntax'
+Plug 'dhruvasagar/vim-table-mode'
 call plug#end()
 
 " Ctrl-P to invoke fuzzy file search
@@ -26,7 +29,7 @@ let g:netrw_liststyle=3
 let g:netrw_banner=0
 let g:netrw_bufsettings = 'noma nomod nu nobl nowrap ro'
 
-set number 
+set number
 set relativenumber
 set nocursorline
 set showcmd
@@ -62,7 +65,7 @@ set t_co=16
 if (has("termguicolors"))
 	set termguicolors
 endif
-colorscheme night-owl 
+colorscheme night-owl
 filetype plugin indent on
 
 autocmd BufWritePre * redraw!
@@ -177,3 +180,28 @@ set spell
 
 nnoremap <silent> <leader>= :vertical resize +50<CR>
 nnoremap <silent> <leader>- :vertical resize -50<CR>
+
+" For table mode
+nnoremap <silent> <leader>tm :TableModeToggle<CR>
+
+" treat rvpm files as html
+augroup filetype_md
+  autocmd!
+  autocmd bufread,bufnew *.rvpm set filetype=pandoc
+augroup end
+
+" Open rvmp files as presentation
+autocmd BufNewFile,BufRead *.rvpm call SetRakshithsVimPresentaionMode()
+function SetRakshithsVimPresentaionMode()
+  nnoremap <buffer> <Right> :n<CR>
+  nnoremap <buffer> <Left> :N<CR>
+
+  "if !exists('#goyo')
+  "  Goyo
+  "endif
+endfunction
+
+let g:pandoc#syntax#codeblocks#embeds#langs = ["javascript", "go", "bash=sh"]
+
+" Hide ~ on empty lines
+hi! EndOfBuffer ctermbg=bg ctermfg=bg guibg=bg guifg=bg
