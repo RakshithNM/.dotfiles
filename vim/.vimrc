@@ -59,14 +59,30 @@ set foldnestmax=10
 set wildmenu
 set clipboard=unnamed
 set autoindent
+set copyindent
 set updatetime=300
 set hidden
+set lazyredraw
+set autoread
+set gdefault
+
+" Make the keyboard faaaaaaast
+set ttyfast
+set timeout timeoutlen=1000 ttimeoutlen=50
+
 set t_co=16
 if (has("termguicolors"))
-	set termguicolors
+  set termguicolors
 endif
 colorscheme night-owl
-filetype plugin indent on
+filetype on
+filetype indent on
+filetype plugin on
+
+" Transparent BG
+hi Normal guibg=NONE ctermbg=NONE
+hi clear LineNr
+hi clear SignColumn
 
 autocmd BufWritePre * redraw!
 " syntax synchronization - for somefiles that syntax highlighting doesnt work
@@ -80,6 +96,9 @@ augroup end
 
 " Tabs for go files
 autocmd FileType go setlocal shiftwidth=4 softtabstop=4 tabstop=4 expandtab
+
+" Start at last place you were editing
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
 " Go imports on save
 let g:go_fmt_command = "goimports"
@@ -175,16 +194,13 @@ let g:rainbow_active=1
 " Mapping for goyo - presentation plugin
 nnoremap <silent> <F12> :Goyo<CR>
 
-" Spell checking
-set spell
-
 nnoremap <silent> <leader>= :vertical resize +50<CR>
 nnoremap <silent> <leader>- :vertical resize -50<CR>
 
 " For table mode
 nnoremap <silent> <leader>tm :TableModeToggle<CR>
 
-" treat rvpm files as html
+" treat rvpm files as pandoc
 augroup filetype_md
   autocmd!
   autocmd bufread,bufnew *.rvpm set filetype=pandoc
@@ -196,12 +212,25 @@ function SetRakshithsVimPresentaionMode()
   nnoremap <buffer> <Right> :n<CR>
   nnoremap <buffer> <Left> :N<CR>
 
-  "if !exists('#goyo')
-  "  Goyo
-  "endif
+  " Hide ~ on empty lines
+  colorscheme night-owl
+  hi! EndOfBuffer ctermbg=bg ctermfg=bg guibg=bg guifg=bg
+
+  if !exists('#goyo')
+    Goyo
+  endif
 endfunction
 
-let g:pandoc#syntax#codeblocks#embeds#langs = ["javascript", "go", "bash=sh"]
+let g:pandoc#syntax#codeblocks#embeds#langs = ["javascript", "go", "bash=sh", "json"]
 
-" Hide ~ on empty lines
-hi! EndOfBuffer ctermbg=bg ctermfg=bg guibg=bg guifg=bg
+" Pressing ,ss will toggle and untoggle spell checking
+map <leader>ss :setlocal spell!<cr>
+
+" Easy vsplit
+nnoremap <silent> vv :vsp<CR>
+
+" Open terminal
+nnoremap <silent> vrt :vertical rightbelow terminal<CR>
+
+" Indent entire file
+nnoremap <silent> ii gg=G
