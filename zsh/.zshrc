@@ -98,7 +98,6 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-
 source ~/.nvm/nvm.sh
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
@@ -138,10 +137,14 @@ alias gsl='git status | lolcat'
 alias gdl='git diff | lolcat'
 alias gap='git add -p'
 
-alias '?'='~/gs.sh'
-
 function cd() {
   builtin cd "$@" && ls -F | lolcat
 }
 
 alias ls='ls | lolcat'
+
+alias weather="curl wttr.in | lolcat"
+alias lynx="lynx duckduckgo.com | lolcat"
+
+# alias to open projects
+alias cosfw="mux cosfw"
