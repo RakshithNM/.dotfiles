@@ -16,6 +16,7 @@ Plug 'mariappan/dragvisuals.vim'
 Plug 'voldikss/vim-floaterm'
 call plug#end()
 
+
 " Customize the netrw window
 let g:netrw_liststyle=3
 let g:netrw_banner=0
@@ -195,6 +196,7 @@ endfunction
 
 " Setting for rainbow plugin
 let g:rainbow_active=1
+
 
 " Pressing ,ss will toggle and untoggle spell checking
 map <leader>ss :setlocal spell!<cr>
