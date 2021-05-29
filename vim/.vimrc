@@ -90,6 +90,10 @@ hi Normal guibg=NONE ctermbg=NONE
 hi clear LineNr
 hi clear SignColumn
 
+" Set floaterm window's background to transparent
+hi Floaterm guibg=NONE ctermbg=NONE
+hi FloatermBorder guibg=NONE guifg=cyan
+
 autocmd BufWritePre * redraw!
 " syntax synchronization - for somefiles that syntax highlighting doesnt work
 autocmd BufEnter * :syntax sync fromstart
@@ -106,7 +110,8 @@ au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g
 " Key bindings for pop ups
 nnoremap <silent> <C-p> :FZF<CR>
 nnoremap <silent> <C-f> :Rg<CR>
-nnoremap <silent> lg :FloatermNew --height=1.0 --width=1.0 --name=lazygit lazygit<CR>
+nnoremap <silent> lg :FloatermNew --height=1.0 --width=0.99 --name=lazygit lazygit<CR>
+nnoremap <silent> term :FloatermNew --wintype=popup --height=1.0 --width=0.99 --name=terminal<CR>
 
 " F7 to run current js file in the node env
 nnoremap <F7> :w !node<CR>
@@ -139,6 +144,9 @@ nnoremap <silent> <leader>- :vertical resize -50<CR>
 " Easy vsplit
 nnoremap <silent> vv :vsp<CR>
 
+" Select all
+nnoremap <C-a> ggVG"
+
 " Open terminal
 nnoremap <silent> vrt :vertical rightbelow terminal<CR>
 
@@ -168,7 +176,7 @@ inoremap <Up>    <ESC>:echoe "Use k"<CR>
 inoremap <Down>  <ESC>:echoe "Use j"<CR>
 
 " Automatic } closign flower brackets
-autocmd FileType go inoremap { {<CR>}<ESC>ko
+inoremap { {<CR>}<ESC>ko
 " Automatic ) closign brackets
 inoremap ( ()<ESC>i
 " Automatic ] closing brackets
@@ -226,3 +234,19 @@ let g:DVB_TrimWS = 1
 
 " Closing the floaterm popup(for example using q in lazygit) autocloses the popup
 let g:floaterm_autoclose=1
+
+" Mark trailing spaces as errors
+match ErrorMsg '\s\+$'
+
+" Delete trailing white space on save, useful for some filetypes ;)
+fun! CleanExtraSpaces()
+  let save_cursor = getpos(".")
+  let old_query = getreg('/')
+  silent! %s/\s\+$//e
+  call setpos('.', save_cursor)
+  call setreg('/', old_query)
+endfun
+
+if has("autocmd")
+  autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
+endif
