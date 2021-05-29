@@ -206,5 +206,4 @@ vmap <expr> D DVB_Duplicate()
 " Remove any introduced trailing whitespace after moving...
 let g:DVB_TrimWS = 1
 
-let g:floaterm_keymap_kill = 'X'
 let g:floaterm_autoclose=1
