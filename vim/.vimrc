@@ -16,9 +16,6 @@ Plug 'mariappan/dragvisuals.vim'
 Plug 'voldikss/vim-floaterm'
 call plug#end()
 
-nnoremap <silent> <C-p> :FZF<CR>
-nnoremap <silent> <C-f> :Rg<CR>
-nnoremap <silent> lg :FloatermNew --height=1.0 --width=1.0 --name=lazygit lazygit<CR>
 
 " Customize the netrw window
 let g:netrw_liststyle=3
@@ -73,6 +70,13 @@ set timeout timeoutlen=1000 ttimeoutlen=50
 exec "set listchars=tab:\uBB\uBB,trail:\uB7,nbsp:~"
 set list
 
+" Show the number of search pattern matches
+set shortmess-=S
+
+" Autocomplete CSS classes etc with dashes also changes the 'w' small word
+" motion to not stop at dashes, search under cursor also works
+set iskeyword+=-
+
 set t_co=16
 if (has("termguicolors"))
   set termguicolors
@@ -100,6 +104,11 @@ augroup end
 " Start at last place you were editing
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
+" Key bindings for pop ups
+nnoremap <silent> <C-p> :FZF<CR>
+nnoremap <silent> <C-f> :Rg<CR>
+nnoremap <silent> lg :FloatermNew --height=1.0 --width=1.0 --name=lazygit lazygit<CR>
+
 " F7 to run current js file in the node env
 nnoremap <F7> :w !node<CR>
 
@@ -113,18 +122,6 @@ nnoremap <F5> :%s/\s\+$//e<CR>
 " Move vertically by visual line, doesnot skip line broken into two
 nnoremap j gj
 nnoremap k gk
-inoremap jk <esc>
-vnoremap jk <esc>
-
-" Show the number of search pattern matches
-set shortmess-=S
-
-" Autocomplete CSS classes etc with dashes also changes the 'w' small word
-" motion to not stop at dashes, search under cursor also works
-set iskeyword+=-
-
-" Use a macro to add double quotes around words
-nmap sw bi"jkea"jk
 
 " Try to prevent bad habits like using the arrow keys for movement. This is
 " not the only possible bad habit. For example, holding down the h/j/k/l keys
@@ -136,6 +133,22 @@ nnoremap <Left>  :echoe "Use h"<CR>
 nnoremap <Right> :echoe "Use l"<CR>
 nnoremap <Up>    :echoe "Use k"<CR>
 nnoremap <Down>  :echoe "Use j"<CR>
+
+nnoremap <silent> <leader>= :vertical resize +50<CR>
+nnoremap <silent> <leader>- :vertical resize -50<CR>
+
+" Easy vsplit
+nnoremap <silent> vv :vsp<CR>
+
+" Open terminal
+nnoremap <silent> vrt :vertical rightbelow terminal<CR>
+
+" Use a macro to add double quotes around words
+nmap sw bi"jkea"jk
+
+inoremap jk <esc>
+vnoremap jk <esc>
+
 " ...and in insert mode
 inoremap <Left>  <ESC>:echoe "Use h"<CR>
 inoremap <Right> <ESC>:echoe "Use l"<CR>
@@ -185,17 +198,9 @@ endfunction
 " Setting for rainbow plugin
 let g:rainbow_active=1
 
-nnoremap <silent> <leader>= :vertical resize +50<CR>
-nnoremap <silent> <leader>- :vertical resize -50<CR>
 
 " Pressing ,ss will toggle and untoggle spell checking
 map <leader>ss :setlocal spell!<cr>
-
-" Easy vsplit
-nnoremap <silent> vv :vsp<CR>
-
-" Open terminal
-nnoremap <silent> vrt :vertical rightbelow terminal<CR>
 
 " Mappings for dragvisuals plugin
 vmap <expr> H DVB_Drag('left')
