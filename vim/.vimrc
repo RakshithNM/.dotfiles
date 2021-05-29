@@ -70,7 +70,6 @@ exec "set listchars=tab:\uBB\uBB,trail:\uB7,nbsp:~"
 set list
 
 " Show the number of search pattern matches
-set shortmess-=S
 
 " Autocomplete CSS classes etc with dashes also changes the 'w' small word
 " motion to not stop at dashes, search under cursor also works
