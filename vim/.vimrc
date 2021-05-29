@@ -206,4 +206,5 @@ vmap <expr> D DVB_Duplicate()
 " Remove any introduced trailing whitespace after moving...
 let g:DVB_TrimWS = 1
 
+" Closing the floaterm popup(for example using q in lazygit) autocloses the popup
 let g:floaterm_autoclose=1
