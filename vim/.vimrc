@@ -9,26 +9,24 @@ Plug 'RRethy/vim-illuminate'                                                    
 Plug 'machakann/vim-highlightedyank'                                            " make the yanked region apparent
 Plug 'gregsexton/MatchTag'                                                      " highlight matching tag
 Plug 'pangloss/vim-javascript'                                                  " syntax highlighting
-Plug 'junegunn/goyo.vim'
 Plug 'haishanh/night-owl.vim'
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'mattn/emmet-vim'
 Plug 'preservim/nerdcommenter'
-Plug 'vim-pandoc/vim-pandoc'
-Plug 'vim-pandoc/vim-pandoc-syntax'
-Plug 'dhruvasagar/vim-table-mode'
+Plug 'mariappan/dragvisuals.vim'
+Plug 'voldikss/vim-floaterm'
 call plug#end()
 
-" Ctrl-P to invoke fuzzy file search
 nnoremap <silent> <C-p> :FZF<CR>
 nnoremap <silent> <C-f> :Rg<CR>
-nnoremap <silent> <C-t> :TlistToggle<CR>
+nnoremap <silent> lg :FloatermNew --height=1.0 --width=1.0 --name=lazygit lazygit<CR>
 
 " Customize the netrw window
 let g:netrw_liststyle=3
 let g:netrw_banner=0
 let g:netrw_bufsettings = 'noma nomod nu nobl nowrap ro'
 
+set nocompatible
+set path+=**  " search down the sub folders
 set number
 set relativenumber
 set nocursorline
@@ -65,10 +63,15 @@ set hidden
 set lazyredraw
 set autoread
 set gdefault
+" set textwidth=80
+" set colorcolumn=+1
 
 " Make the keyboard faaaaaaast
 set ttyfast
 set timeout timeoutlen=1000 ttimeoutlen=50
+"show whitespace and other unwanted characters
+exec "set listchars=tab:\uBB\uBB,trail:\uB7,nbsp:~"
+set list
 
 set t_co=16
 if (has("termguicolors"))
@@ -94,20 +97,11 @@ augroup filetype_html
   autocmd bufread,bufnew *.ejs set filetype=html
 augroup end
 
-" Tabs for go files
-autocmd FileType go setlocal shiftwidth=4 softtabstop=4 tabstop=4 expandtab
-
 " Start at last place you were editing
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
-" Go imports on save
-let g:go_fmt_command = "goimports"
-
 " F7 to run current js file in the node env
 nnoremap <F7> :w !node<CR>
-
-" <F8> to run current go file in the go env
-nnoremap <F8> :w !go run %<CR>
 
 " \<space> to turn off search highlight
 nnoremap <leader><space> :nohls<CR>
@@ -149,7 +143,7 @@ inoremap <Up>    <ESC>:echoe "Use k"<CR>
 inoremap <Down>  <ESC>:echoe "Use j"<CR>
 
 " Automatic } closign flower brackets
-inoremap { {<CR>}<ESC>ko
+autocmd FileType go inoremap { {<CR>}<ESC>ko
 " Automatic ) closign brackets
 inoremap ( ()<ESC>i
 
@@ -191,37 +185,8 @@ endfunction
 " Setting for rainbow plugin
 let g:rainbow_active=1
 
-" Mapping for goyo - presentation plugin
-nnoremap <silent> <F12> :Goyo<CR>
-
 nnoremap <silent> <leader>= :vertical resize +50<CR>
 nnoremap <silent> <leader>- :vertical resize -50<CR>
-
-" For table mode
-nnoremap <silent> <leader>tm :TableModeToggle<CR>
-
-" treat rvpm files as pandoc
-augroup filetype_md
-  autocmd!
-  autocmd bufread,bufnew *.rvpm set filetype=pandoc
-augroup end
-
-" Open rvmp files as presentation
-autocmd BufNewFile,BufRead *.rvpm call SetRakshithsVimPresentaionMode()
-function SetRakshithsVimPresentaionMode()
-  nnoremap <buffer> <Right> :n<CR>
-  nnoremap <buffer> <Left> :N<CR>
-
-  " Hide ~ on empty lines
-  colorscheme night-owl
-  hi! EndOfBuffer ctermbg=bg ctermfg=bg guibg=bg guifg=bg
-
-  if !exists('#goyo')
-    Goyo
-  endif
-endfunction
-
-let g:pandoc#syntax#codeblocks#embeds#langs = ["javascript", "go", "bash=sh", "json"]
 
 " Pressing ,ss will toggle and untoggle spell checking
 map <leader>ss :setlocal spell!<cr>
@@ -232,5 +197,14 @@ nnoremap <silent> vv :vsp<CR>
 " Open terminal
 nnoremap <silent> vrt :vertical rightbelow terminal<CR>
 
-" Indent entire file
-nnoremap <silent> ii gg=G
+" Mappings for dragvisuals plugin
+vmap <expr> H DVB_Drag('left')
+vmap <expr> L DVB_Drag('right')
+vmap <expr> J DVB_Drag('down')
+vmap <expr> K DVB_Drag('up')
+vmap <expr> D DVB_Duplicate()
+" Remove any introduced trailing whitespace after moving...
+let g:DVB_TrimWS = 1
+
+let g:floaterm_keymap_kill = 'X'
+let g:floaterm_autoclose=1

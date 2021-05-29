@@ -1,3 +1,9 @@
+cat << EOF
+┌┬┐┌─┐  ┌─┐┌─┐┬┌─┐  ┌─┐┬ ┬┬┌┬┐
+ │││ │  ├┤ ├─┘││    └─┐├─┤│ │ 
+─┴┘└─┘  └─┘┴  ┴└─┘  └─┘┴ ┴┴ ┴ 
+EOF
+
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
@@ -142,9 +148,12 @@ function cd() {
 }
 
 alias ls='ls | lolcat'
+alias xcode='open -a Xcode'
 
 alias weather="curl wttr.in | lolcat"
 alias lynx="lynx duckduckgo.com | lolcat"
 
 # alias to open projects
 alias cosfw="mux cosfw"
+alias stage="mux stage"
+alias rostersync="mux rostersync"
