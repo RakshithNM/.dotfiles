@@ -142,8 +142,21 @@ nnoremap <silent> vv :vsp<CR>
 " Open terminal
 nnoremap <silent> vrt :vertical rightbelow terminal<CR>
 
+" Leader L to automatically put word under cursor in a console.log
+nnoremap <Leader>L "ayiwoconsole.log({<C-R>a});<Esc>
+
 " Use a macro to add double quotes around words
 nmap sw bi"jkea"jk
+
+" Tab and Shift-Tab to indent and de-indent
+nmap >> <Nop>
+nmap << <Nop>
+vmap >> <Nop>
+vmap << <Nop>
+nnoremap <Tab>   >>
+nnoremap <S-Tab> <<
+vnoremap <Tab>   >><Esc>gv
+vnoremap <S-Tab> <<<Esc>gv
 
 inoremap jk <esc>
 vnoremap jk <esc>
@@ -158,6 +171,8 @@ inoremap <Down>  <ESC>:echoe "Use j"<CR>
 autocmd FileType go inoremap { {<CR>}<ESC>ko
 " Automatic ) closign brackets
 inoremap ( ()<ESC>i
+" Automatic ] closing brackets
+inoremap [ []<ESC>i
 
 " Use tab for trigger completion with characters ahead and navigate.
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
