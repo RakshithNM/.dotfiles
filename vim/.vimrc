@@ -3,12 +3,12 @@ call plug#begin()
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'Yggdroot/indentLine'                                                      " indent line
-Plug 'luochen1990/rainbow'                                                      " different level highlight
-Plug 'RRethy/vim-illuminate'                                                    " automatically highlight other uses of the current word
-Plug 'machakann/vim-highlightedyank'                                            " make the yanked region apparent
-Plug 'gregsexton/MatchTag'                                                      " highlight matching tag
-Plug 'pangloss/vim-javascript'                                                  " syntax highlighting
+Plug 'Yggdroot/indentLine'
+Plug 'luochen1990/rainbow'
+Plug 'RRethy/vim-illuminate'
+Plug 'machakann/vim-highlightedyank'
+Plug 'gregsexton/MatchTag'
+Plug 'pangloss/vim-javascript'
 Plug 'haishanh/night-owl.vim'
 Plug 'mattn/emmet-vim'
 Plug 'preservim/nerdcommenter'
@@ -21,69 +21,54 @@ let g:netrw_liststyle=3
 let g:netrw_banner=0
 let g:netrw_bufsettings = 'noma nomod nu nobl nowrap ro'
 
-set nocompatible
-set path+=**  " search down the sub folders
-set number
-set relativenumber
-set nocursorline
-set showcmd
-set ruler
-set cmdheight=2
-set showmode
-set ignorecase
-set smartcase
-set hlsearch
-set incsearch
-set showmatch
-set noerrorbells
-set novisualbell
-set t_vb=
+set nocompatible                                                                                   " vim improved
+set path+=**                                                                                       " search down the sub folders
+set number                                                                                         " show numbers
+set relativenumber                                                                                 " show relativenumber
+set nocursorline                                                                                   " no show of cursorline - for performance
+set showcmd                                                                                        " show the command being typed
+set ruler                                                                                          " show the line and column number
+set cmdheight=2                                                                                    " number of lines used for command-line
+set ignorecase                                                                                     " ignore case of normal letters
+set nosmartcase                                                                                    " matches case insensively when ignorecase is on
+set hlsearch                                                                                       " highlight all matches when there is search
+set incsearch                                                                                      " highlight the match as typed
+set showmatch                                                                                      " when bracket inserted, briefly jump to the match
+set noerrorbells                                                                                   " no beeps
+set visualbell t_vb=                                                                               " no visual bells
 set tm=500
-set nobackup
-set nowb
-set noswapfile
-set expandtab
-set shiftwidth=2
-set tabstop=2
-set softtabstop=2
-set nofoldenable
-set foldlevelstart=3
-set foldmethod=indent
-set foldnestmax=10
-set wildmenu
-set clipboard=unnamed
-set autoindent
-set copyindent
-set updatetime=300
-set hidden
-set lazyredraw
-set autoread
-set gdefault
-" set textwidth=80
-" set colorcolumn=+1
-
-" Make the keyboard faaaaaaast
-set ttyfast
-set timeout timeoutlen=1000 ttimeoutlen=50
-"show whitespace and other unwanted characters
+set nobackup                                                                                       " no backup before overwriting a file
+set nowb                                                                                           " no backup before overwriting a file
+set noswapfile                                                                                     " dont use swap file
+set expandtab                                                                                      " use spaces to insert tab
+set shiftwidth=2                                                                                   " number of spaces to use for each step of autoindent
+set tabstop=2                                                                                      " number of spaces tab counts for in a file
+set autoindent                                                                                     " copy indent from current line when starting a new one
+set softtabstop=2                                                                                  " number of spaces tab counts for while inserting
+set nofoldenable                                                                                   " no folding
+set wildmenu                                                                                       " tab completion in command line mode
+set clipboard=unnamed                                                                              " copy to system clipboard
+set copyindent                                                                                     " copy the indent of existing lines to autoindent new line
+set updatetime=300                                                                                 " default is 4000ms - leads to delays
+set hidden                                                                                         " buffer hidden when abandoned
+set lazyredraw                                                                                     " no redraw when execution commands
+set autoread                                                                                       " autoread files that has been changed outside vim
+set gdefault                                                                                       " g is default on in subsitite command
+set ttyfast                                                                                        " make vim fast
+set timeout timeoutlen=1000 ttimeoutlen=50                                                         " time for the mapped keycode to complete
 exec "set listchars=tab:\uBB\uBB,trail:\uB7,nbsp:~"
-set list
-
-" Show the number of search pattern matches
-set shortmess-=S
-
-" Autocomplete CSS classes etc with dashes also changes the 'w' small word
-" motion to not stop at dashes, search under cursor also works
-set iskeyword+=-
-
-set t_co=16
+set list                                                                                           " show whitespace and other unwanted characters
+set shortmess-=S                                                                                   " show the number of search matches
+set iskeyword+=-                                                                                   " autocomplete CSS classes etc with dashes also changes the 'w' small word motion to not stop at dashes, search under cursor also works
+set t_co=16                                                                                        " number of terminal colors
 if (has("termguicolors"))
-  set termguicolors
+  set termguicolors                                                                                " use highlight-guifg and highlight-guibg attribute in terminal
 endif
-colorscheme night-owl
-filetype on
-filetype indent on
-filetype plugin on
+colorscheme night-owl                                                                              " user night-owl as colorscheme
+
+filetype on                                                                                        " filetype detection
+filetype indent on                                                                                 " filetype indent on
+filetype plugin on                                                                                 " filetype plugin on
 
 " Transparent BG
 hi Normal guibg=NONE ctermbg=NONE
@@ -115,7 +100,6 @@ nnoremap <silent> term :FloatermNew --wintype=popup --height=1.0 --width=0.99 --
 
 " F7 to run current js file in the node env
 nnoremap <F7> :w !node<CR>
-
 " \<space> to turn off search highlight
 nnoremap <leader><space> :nohls<CR>
 " <F4> to highlight all trailing whitespace
@@ -138,6 +122,7 @@ nnoremap <Right> :echoe "Use l"<CR>
 nnoremap <Up>    :echoe "Use k"<CR>
 nnoremap <Down>  :echoe "Use j"<CR>
 
+" mappings for resizing
 nnoremap <silent> <leader>= :vertical resize +50<CR>
 nnoremap <silent> <leader>- :vertical resize -50<CR>
 
@@ -166,10 +151,11 @@ nnoremap <S-Tab> <<
 vnoremap <Tab>   >><Esc>gv
 vnoremap <S-Tab> <<<Esc>gv
 
+" jk for escape
 inoremap jk <esc>
 vnoremap jk <esc>
 
-" ...and in insert mode
+" Prevent bad habits of using arrow keys
 inoremap <Left>  <ESC>:echoe "Use h"<CR>
 inoremap <Right> <ESC>:echoe "Use l"<CR>
 inoremap <Up>    <ESC>:echoe "Use k"<CR>
@@ -208,6 +194,9 @@ nmap <silent> gr <Plug>(coc-references)
 
 " Use K to show documentation in preview window.
 nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+" Do not show the q: window
+map q: :q
 
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
