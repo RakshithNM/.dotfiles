@@ -25,6 +25,7 @@ set nocompatible                                                                
 set path+=**                                                                                       " search down the sub folders
 set number                                                                                         " show numbers
 set relativenumber                                                                                 " show relativenumber
+set nocursorcolumn                                                                                 " speed up syntax highlight
 set nocursorline                                                                                   " no show of cursorline - for performance
 set showcmd                                                                                        " show the command being typed
 set ruler                                                                                          " show the line and column number
@@ -60,6 +61,7 @@ exec "set listchars=tab:\uBB\uBB,trail:\uB7,nbsp:~"
 set list                                                                                           " show whitespace and other unwanted characters
 set shortmess-=S                                                                                   " show the number of search matches
 set iskeyword+=-                                                                                   " autocomplete CSS classes etc with dashes also changes the 'w' small word motion to not stop at dashes, search under cursor also works
+set virtualedit=all                                                                                " to edit where there is no actual character
 set t_co=16                                                                                        " number of terminal colors
 if (has("termguicolors"))
   set termguicolors                                                                                " use highlight-guifg and highlight-guibg attribute in terminal
@@ -92,9 +94,21 @@ augroup end
 " Start at last place you were editing
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
+" Better ripgrep
+function! RipgrepFzf(query, fullscreen)
+  let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
+  let initial_command = printf(command_fmt, shellescape(a:query))
+  let reload_command = printf(command_fmt, '{q}')
+  let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+endfunction
+
+" RG command to open ripgrep
+command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
+
 " Key bindings for pop ups
 nnoremap <silent> <C-p> :FZF<CR>
-nnoremap <silent> <C-f> :Rg<CR>
+nnoremap <silent> <C-f> :RG<CR>
 nnoremap <silent> lg :FloatermNew --height=1.0 --width=0.99 --name=lazygit lazygit<CR>
 nnoremap <silent> term :FloatermNew --wintype=popup --height=1.0 --width=0.99 --name=terminal<CR>
 
