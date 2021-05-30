@@ -14,6 +14,7 @@ Plug 'mattn/emmet-vim'
 Plug 'preservim/nerdcommenter'
 Plug 'mariappan/dragvisuals.vim'
 Plug 'voldikss/vim-floaterm'
+Plug 'zivyangll/git-blame.vim'
 call plug#end()
 
 " Customize the netrw window
@@ -151,6 +152,9 @@ nnoremap <silent> vrt :vertical rightbelow terminal<CR>
 
 " Leader L to automatically put word under cursor in a console.log
 nnoremap <Leader>L "ayiwoconsole.log({<C-R>a});<Esc>
+
+" git blame in command line
+nnoremap <Leader>gb :<C-u>call gitblame#echo()<CR>
 
 " Use a macro to add double quotes around words
 nmap sw bi"jkea"jk
