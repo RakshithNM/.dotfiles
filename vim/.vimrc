@@ -15,6 +15,7 @@ Plug 'preservim/nerdcommenter'
 Plug 'mariappan/dragvisuals.vim'
 Plug 'voldikss/vim-floaterm'
 Plug 'zivyangll/git-blame.vim'
+Plug 'vimwiki/vimwiki'
 call plug#end()
 
 " Customize the netrw window
@@ -62,7 +63,6 @@ exec "set listchars=tab:\uBB\uBB,trail:\uB7,nbsp:~"
 set list                                                                                           " show whitespace and other unwanted characters
 set shortmess-=S                                                                                   " show the number of search matches
 set iskeyword+=-                                                                                   " autocomplete CSS classes etc with dashes also changes the 'w' small word motion to not stop at dashes, search under cursor also works
-set virtualedit=all                                                                                " to edit where there is no actual character
 set t_co=16                                                                                        " number of terminal colors
 if (has("termguicolors"))
   set termguicolors                                                                                " use highlight-guifg and highlight-guibg attribute in terminal
@@ -257,3 +257,5 @@ endfun
 if has("autocmd")
   autocmd BufWritePre *.txt,*.js,*.ts,*.md,*.sh,*.go :call CleanExtraSpaces()
 endif
+
+let g:vimwiki_url_maxsave=0
