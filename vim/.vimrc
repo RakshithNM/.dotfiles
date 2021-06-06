@@ -61,6 +61,7 @@ set ttyfast                                                                     
 set timeout timeoutlen=1000 ttimeoutlen=50                                                         " time for the mapped keycode to complete
 exec "set listchars=tab:\uBB\uBB,trail:\uB7,nbsp:~"
 set list                                                                                           " show whitespace and other unwanted characters
+set nrformats=                                                                                     " treat numerals as decimals not the default octal
 set shortmess-=S                                                                                   " show the number of search matches
 set iskeyword+=-                                                                                   " autocomplete CSS classes etc with dashes also changes the 'w' small word motion to not stop at dashes, search under cursor also works
 set t_co=16                                                                                        " number of terminal colors
@@ -145,7 +146,7 @@ nnoremap <silent> <leader>- :vertical resize -50<CR>
 nnoremap <silent> vv :vsp<CR>
 
 " Select all
-nnoremap <C-a> ggVG"
+nnoremap <leader>a ggVG"
 
 " Open terminal
 nnoremap <silent> vrt :vertical rightbelow terminal<CR>
