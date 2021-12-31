@@ -8,14 +8,19 @@ Plug 'luochen1990/rainbow'
 Plug 'RRethy/vim-illuminate'
 Plug 'machakann/vim-highlightedyank'
 Plug 'gregsexton/MatchTag'
+Plug 'jonsmithers/vim-html-template-literals'
 Plug 'pangloss/vim-javascript'
-Plug 'haishanh/night-owl.vim'
 Plug 'mattn/emmet-vim'
 Plug 'preservim/nerdcommenter'
 Plug 'mariappan/dragvisuals.vim'
 Plug 'voldikss/vim-floaterm'
 Plug 'zivyangll/git-blame.vim'
 Plug 'vimwiki/vimwiki'
+Plug 'tpope/vim-surround'
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+Plug 'unblevable/quick-scope'
+Plug 'dyng/ctrlsf.vim'
+Plug 'mhinz/vim-startify'
 call plug#end()
 
 " Customize the netrw window
@@ -59,8 +64,8 @@ set autoread                                                                    
 set gdefault                                                                                       " g is default on in subsitite command
 set ttyfast                                                                                        " make vim fast
 set timeout timeoutlen=1000 ttimeoutlen=50                                                         " time for the mapped keycode to complete
-exec "set listchars=tab:\uBB\uBB,trail:\uB7,nbsp:~"
-set list                                                                                           " show whitespace and other unwanted characters
+" exec "set listchars=tab:\uBB\uBB,trail:\uB7,nbsp:~"
+" set list                                                                                           " show whitespace and other unwanted characters
 set nrformats=                                                                                     " treat numerals as decimals not the default octal
 set shortmess-=S                                                                                   " show the number of search matches
 set iskeyword+=-                                                                                   " autocomplete CSS classes etc with dashes also changes the 'w' small word motion to not stop at dashes, search under cursor also works
@@ -68,7 +73,6 @@ set t_co=16                                                                     
 if (has("termguicolors"))
   set termguicolors                                                                                " use highlight-guifg and highlight-guibg attribute in terminal
 endif
-colorscheme night-owl                                                                              " user night-owl as colorscheme
 
 filetype on                                                                                        " filetype detection
 filetype indent on                                                                                 " filetype indent on
@@ -78,23 +82,63 @@ filetype plugin on                                                              
 hi Normal guibg=NONE ctermbg=NONE
 hi clear LineNr
 hi clear SignColumn
-
+" Change color of the visual selection
+hi Visual guifg=NONE guibg=#0f00f0 gui=NONE
 " Set floaterm window's background to transparent
 hi Floaterm guibg=NONE ctermbg=NONE
 hi FloatermBorder guibg=NONE guifg=cyan
+" Change color of the coc popup
+hi CocHintFloat ctermfg=Red  guifg=#ff0000 ctermbg=Black
+hi Pmenu ctermbg=Black guifg=#00ffff guibg=Black
+hi PmenuSel guifg=Black guibg=#00ffff
 
-autocmd BufWritePre * redraw!
-" syntax synchronization - for somefiles that syntax highlighting doesnt work
-autocmd BufEnter * :syntax sync fromstart
+if has("autocmd")
+  augroup redraw_syntax
+    autocmd!
+    autocmd BufWritePre * redraw!
+    " syntax synchronization - for somefiles that syntax highlighting doesnt work
+    autocmd BufEnter * :syntax sync fromstart
+  augroup end
+endif
 
 " treat ejs files as html
-augroup filetype_html
-  autocmd!
-  autocmd bufread,bufnew *.ejs set filetype=html
-augroup end
+if has("autocmd")
+  augroup filetype_html
+    autocmd!
+    autocmd bufread,bufnew *.ejs set filetype=html
+  augroup end
+endif
 
-" Start at last place you were editing
-au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+if has("autocmd")
+  augroup save_location
+    autocmd!
+    " Start at last place you were editing
+    au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+  augroup end
+endif
+
+" Delete trailing white space on save, useful for some filetypes ;)
+fun! CleanExtraSpaces()
+  let save_cursor = getpos(".")
+  let old_query = getreg('/')
+  silent! %s/\s\+$//e
+  call setpos('.', save_cursor)
+  call setreg('/', old_query)
+endfun
+
+if has("autocmd")
+  augroup clean_spaces
+    autocmd!
+    autocmd BufWritePre *.txt,*.js,*.ts,*.md,*.sh,*.go,*.ejs,*.scss,*.cpp,*.h :call CleanExtraSpaces()
+  augroup end
+endif
+
+if has("autocmd")
+  augroup tab_customisation
+    autocmd FileType cpp set tabstop=4 shiftwidth=4 softtabstop=0 noexpandtab
+    autocmd FileType go set tabstop=4 shiftwidth=4 softtabstop=0 noexpandtab
+  augroup end
+endif
 
 " Better ripgrep
 function! RipgrepFzf(query, fullscreen)
@@ -116,6 +160,8 @@ nnoremap <silent> term :FloatermNew --wintype=popup --height=1.0 --width=0.99 --
 
 " F7 to run current js file in the node env
 nnoremap <F7> :w !node<CR>
+" F8 to run current go file
+nnoremap <F8> :w !go run %<CR>
 " \<space> to turn off search highlight
 nnoremap <leader><space> :nohls<CR>
 " <F4> to highlight all trailing whitespace
@@ -127,8 +173,23 @@ nnoremap <F5> :%s/\s\+$//e<CR>
 nnoremap j gj
 nnoremap k gk
 
+" Make Y behave like all other capital letters
+nnoremap Y y$
+
+" Center and open and folds when doing incsearch
+nnoremap n nzzzv
+nnoremap N Nzzzv
+nnoremap J mzJ`z
+
+" Undo breakpoints
+inoremap , ,<c-g>u
+inoremap . .<c-g>u
+inoremap <space> <space><c-g>u
+
+" Visual select word under cursor
+nnoremap <space> viw
+
 " Try to prevent bad habits like using the arrow keys for movement. This is
-" not the only possible bad habit. For example, holding down the h/j/k/l keys
 " for movement, rather than using more efficient movement commands, is also a
 " bad habit. The former is enforceable through a .vimrc, while we don't know
 " how to prevent the latter.
@@ -157,8 +218,17 @@ nnoremap <Leader>L "ayiwoconsole.log({<C-R>a});<Esc>
 " git blame in command line
 nnoremap <Leader>gb :<C-u>call gitblame#echo()<CR>
 
-" Use a macro to add double quotes around words
-nmap sw bi"jkea"jk
+" surround word under cursor with double/single quotes
+:nnoremap <leader>" viw<esc>a"<esc>bi"<esc>lel
+:nnoremap <leader>' viw<esc>a'<esc>bi'<esc>lel
+
+" Open CtrlSF prompt
+nnoremap <C-S> <Plug>CtrlSFPrompt
+
+" Move focus to CtrlSF prompt on start searching
+let g:ctrlsf_auto_focus = {
+    \ "at": "start"
+    \ }
 
 " Tab and Shift-Tab to indent and de-indent
 nmap >> <Nop>
@@ -170,22 +240,12 @@ nnoremap <S-Tab> <<
 vnoremap <Tab>   >><Esc>gv
 vnoremap <S-Tab> <<<Esc>gv
 
-" jk for escape
-inoremap jk <esc>
-vnoremap jk <esc>
-
 " Prevent bad habits of using arrow keys
 inoremap <Left>  <ESC>:echoe "Use h"<CR>
 inoremap <Right> <ESC>:echoe "Use l"<CR>
 inoremap <Up>    <ESC>:echoe "Use k"<CR>
 inoremap <Down>  <ESC>:echoe "Use j"<CR>
-
-" Automatic } closign flower brackets
-inoremap { {<CR>}<ESC>ko
-" Automatic ) closign brackets
-inoremap ( ()<ESC>i
-" Automatic ] closing brackets
-inoremap [ []<ESC>i
+inoremap ;; <ESC>A;<ESC>
 
 " Use tab for trigger completion with characters ahead and navigate.
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
@@ -205,18 +265,6 @@ endfunction
 " Coc only does snippet and additional edit on confirm.
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
-" GoTo code navigation.
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-
-" Use K to show documentation in preview window.
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-" Do not show the q: window
-map q: :q
-
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
     execute 'h '.expand('<cword>')
@@ -225,6 +273,18 @@ function! s:show_documentation()
   endif
 endfunction
 
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+" GoTo code navigation.
+nnoremap <silent> gd <Plug>(coc-definition)
+nnoremap <silent> gy <Plug>(coc-type-definition)
+nnoremap <silent> gi <Plug>(coc-implementation)
+nnoremap <silent> gr <Plug>(coc-references)
+
+" Do not show the q: window
+map q: :q
+
 " Setting for rainbow plugin
 let g:rainbow_active=1
 
@@ -232,11 +292,11 @@ let g:rainbow_active=1
 map <leader>ss :setlocal spell!<cr>
 
 " Mappings for dragvisuals plugin
-vmap <expr> H DVB_Drag('left')
-vmap <expr> L DVB_Drag('right')
-vmap <expr> J DVB_Drag('down')
-vmap <expr> K DVB_Drag('up')
-vmap <expr> D DVB_Duplicate()
+vnoremap <expr> H DVB_Drag('left')
+vnoremap <expr> L DVB_Drag('right')
+vnoremap <expr> J DVB_Drag('down')
+vnoremap <expr> K DVB_Drag('up')
+vnoremap <expr> D DVB_Duplicate()
 " Remove any introduced trailing whitespace after moving...
 let g:DVB_TrimWS = 1
 
@@ -246,17 +306,9 @@ let g:floaterm_autoclose=1
 " Mark trailing spaces as errors
 match ErrorMsg '\s\+$'
 
-" Delete trailing white space on save, useful for some filetypes ;)
-fun! CleanExtraSpaces()
-  let save_cursor = getpos(".")
-  let old_query = getreg('/')
-  silent! %s/\s\+$//e
-  call setpos('.', save_cursor)
-  call setreg('/', old_query)
-endfun
-
-if has("autocmd")
-  autocmd BufWritePre *.txt,*.js,*.ts,*.md,*.sh,*.go :call CleanExtraSpaces()
-endif
-
 let g:vimwiki_url_maxsave=0
+
+" Change in the parameters from anywhere in the line
+onoremap in( :<c-u>normal! f(vi(<cr>
+
+let g:javascript_plugin_flow = 1
